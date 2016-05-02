@@ -16,6 +16,7 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Network\Request;
 
 /**
  * Application Controller
@@ -25,8 +26,7 @@ use Cake\Event\Event;
  *
  * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
  */
-class AppController extends Controller
-{
+class AppController extends Controller {
 
     /**
      * Initialization hook method.
@@ -37,12 +37,23 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function initialize()
-    {
+    public function initialize() {
         parent::initialize();
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+
+        $this->loadComponent('Auth', [
+            'authorize' => ['Controller'],
+            'authenticate' => [
+                'Basic' => [
+                    'fields' => ['username' => 'username', 'password' => 'api_key'],
+                    'userModel' => 'Users'
+                ],
+            ],
+            'storage' => 'Memory',
+            'unauthorizedRedirect' => false
+        ]);
     }
 
     /**
@@ -51,12 +62,9 @@ class AppController extends Controller
      * @param \Cake\Event\Event $event The beforeRender event.
      * @return void
      */
-    public function beforeRender(Event $event)
-    {
-        if (!array_key_exists('_serialize', $this->viewVars) &&
-            in_array($this->response->type(), ['application/json', 'application/xml'])
-        ) {
-            $this->set('_serialize', true);
-        }
+    public function beforeRender(Event $event) {
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->response->type('application/json');
+        $this->set('_serialize', true);
     }
 }
