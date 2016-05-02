@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\TableRegistry;
 
 class LogsController extends AppController {
 
@@ -12,7 +14,13 @@ class LogsController extends AppController {
     public function find() {
         $this->request->allowMethod(['post']);
 
-        $this->set('test', 'OK');
-        $this->set('user', env('PHP_AUTH_USER'));
+        if ( ! isset($this->request->data['table']) )
+            throw new NotFoundException(__('Table required'));
+
+        $this->Logs = TableRegistry::get('Logs', ['table' => $this->request->data['table']]);
+
+        $this->set([
+            'logs' => $this->Logs->find('filter', ['filters' => $this->request->data])->toArray(),
+        ]);
     }
 }
