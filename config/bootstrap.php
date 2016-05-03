@@ -220,3 +220,5 @@ Type::build('date')
 Type::build('datetime')
     ->useImmutable();
 Type::map('json', 'App\Database\Type\JsonType');
+
+Configure::load('log', 'default');

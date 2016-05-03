@@ -5,3 +5,4 @@
 /logs/*
 
 composer.lock
+config/log.php
