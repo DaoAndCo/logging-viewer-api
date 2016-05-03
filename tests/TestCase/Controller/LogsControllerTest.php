@@ -30,7 +30,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindDefault() {
 
-        $this->post('/find', ['table' => 'logs']);
+        $this->post('/find', ['config' => 'logs']);
 
         $this->assertResponseOk();
 
@@ -42,9 +42,19 @@ class LogsControllerTest extends IntegrationTestCase
         $this->assertEquals(2, $result[1]->id);
     }
 
+    public function testFindNotSendConfig() {
+        $this->post('/find');
+        $this->assertResponseCode(404);
+    }
+
+    public function testFindBadConfig() {
+        $this->post('/find', ['config' => 'badconfig']);
+        $this->assertResponseCode(404);
+    }
+
     public function testFindLimit() {
 
-        $this->post('/find', ['table' => 'logs', 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'limit' => 1]);
 
         $this->assertResponseOk();
         $this->assertCount(1, $this->viewVariable('logs'));
@@ -52,7 +62,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindOrderAsc() {
 
-        $this->post('/find', ['table' => 'logs', 'limit' => 1, 'order' => ['level' => 'ASC']]);
+        $this->post('/find', ['config' => 'logs', 'limit' => 1, 'order' => ['level' => 'ASC']]);
 
         $this->assertResponseOk();
 
@@ -62,7 +72,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindOrderDesc() {
 
-        $this->post('/find', ['table' => 'logs', 'limit' => 1, 'order' => ['level' => 'DESC']]);
+        $this->post('/find', ['config' => 'logs', 'limit' => 1, 'order' => ['level' => 'DESC']]);
 
         $this->assertResponseOk();
 
@@ -72,7 +82,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindOrderCombine() {
 
-        $this->post('/find', ['table' => 'logs', 'limit' => 1, 'order' => ['level' => 'DESC', 'scope' => 'ASC']]);
+        $this->post('/find', ['config' => 'logs', 'limit' => 1, 'order' => ['level' => 'DESC', 'scope' => 'ASC']]);
 
         $this->assertResponseOk();
 
@@ -83,7 +93,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindStartDate() {
 
-        $this->post('/find', ['table' => 'logs', 'start' => '2016-05-03', 'limit' => 1, 'order' => ['created' => 'ASC']]);
+        $this->post('/find', ['config' => 'logs', 'start' => '2016-05-03', 'limit' => 1, 'order' => ['created' => 'ASC']]);
 
         $this->assertResponseOk();
 
@@ -93,7 +103,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindEndDate() {
 
-        $this->post('/find', ['table' => 'logs', 'end' => '2016-05-02', 'limit' => 1, 'order' => ['created' => 'DESC']]);
+        $this->post('/find', ['config' => 'logs', 'end' => '2016-05-02', 'limit' => 1, 'order' => ['created' => 'DESC']]);
 
         $this->assertResponseOk();
 
@@ -103,7 +113,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindUserId() {
 
-        $this->post('/find', ['table' => 'logs', 'users' => 2, 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'users' => 2, 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -113,7 +123,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindUserNull() {
 
-        $this->post('/find', ['table' => 'logs', 'users' => null, 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'users' => null, 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -123,7 +133,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindUserFalse() {
 
-        $this->post('/find', ['table' => 'logs', 'users' => false, 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'users' => false, 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -133,7 +143,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindUserArray() {
 
-        $this->post('/find', ['table' => 'logs', 'users' => [2,3]]);
+        $this->post('/find', ['config' => 'logs', 'users' => [2,3]]);
 
         $this->assertResponseOk();
 
@@ -145,7 +155,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindScopeString() {
 
-        $this->post('/find', ['table' => 'logs', 'scopes' => 'plop', 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'scopes' => 'plop', 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -155,7 +165,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindScopeNull() {
 
-        $this->post('/find', ['table' => 'logs', 'scopes' => null, 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'scopes' => null, 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -165,7 +175,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindScopeFalse() {
 
-        $this->post('/find', ['table' => 'logs', 'scopes' => false, 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'scopes' => false, 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -175,7 +185,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindScopeArray() {
 
-        $this->post('/find', ['table' => 'logs', 'scopes' => ['test', 'tele']]);
+        $this->post('/find', ['config' => 'logs', 'scopes' => ['test', 'tele']]);
 
         $this->assertResponseOk();
 
@@ -187,7 +197,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindLevelString() {
 
-        $this->post('/find', ['table' => 'logs', 'levels' => 'warning', 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'levels' => 'warning', 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -197,7 +207,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindLevelArray() {
 
-        $this->post('/find', ['table' => 'logs', 'levels' => ['warning', 'error']]);
+        $this->post('/find', ['config' => 'logs', 'levels' => ['warning', 'error']]);
 
         $this->assertResponseOk();
 
@@ -209,7 +219,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindContextStringValue() {
 
-        $this->post('/find', ['table' => 'logs', 'context' => ['ip'=>'55.44.11.22']]);
+        $this->post('/find', ['config' => 'logs', 'context' => ['ip'=>'55.44.11.22']]);
 
         $this->assertResponseOk();
 
@@ -220,7 +230,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindContextMultiStringValue() {
 
-        $this->post('/find', ['table' => 'logs', 'context' => ['ip'=>'55.44.11.22', 'name' => 'Pages']]);
+        $this->post('/find', ['config' => 'logs', 'context' => ['ip'=>'55.44.11.22', 'name' => 'Pages']]);
 
         $this->assertResponseOk();
 

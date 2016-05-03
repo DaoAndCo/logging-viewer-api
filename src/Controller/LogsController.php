@@ -15,7 +15,7 @@ class LogsController extends AppController {
     /**
      * Find logs with filters (POST)
      * $_POST:
-        * table : table name
+        * config : config name (see config/log.php)
         * filters :
             * (int) limit : limit number results
             * (array) order : order the result set [field => "ASC|DESC", ...]
@@ -29,7 +29,7 @@ class LogsController extends AppController {
     public function find() {
         $this->request->allowMethod(['post']);
 
-        if ( ! isset($this->request->data['config']) || ( ! $config = Configure::read('LoggingViewer')[$this->request->data['config']] ) )
+        if ( ! isset($this->request->data['config']) || ( ! $config = Configure::read("LoggingViewer.{$this->request->data['config']}") ) )
             throw new NotFoundException(__('Table required'));
 
         $this->Logs = TableRegistry::get('Logs', ['table' => $config['table']]);
