@@ -86,5 +86,29 @@ class LogsFixture extends TestFixture
             'message' => "I'm a message",
             'context' => '',
         ],
+        [
+            'created' => '2016-05-03 00:00:00',
+            'level'   => 'info',
+            'scope'   => 'chicken',
+            'user_id' => 7,
+            'message' => "55.44.11.22/Pages",
+            'context' => '{"ip":"55.44.11.22","name":"Pages"}',
+        ],
+        [
+            'created' => '2016-05-03 00:00:00',
+            'level'   => 'info',
+            'scope'   => 'chicken',
+            'user_id' => 7,
+            'message' => "55.44.11.22/Blog",
+            'context' => '{"ip":"55.44.11.22","name":"Blog"}',
+        ],
+        [
+            'created' => '2016-05-03 00:00:00',
+            'level'   => 'info',
+            'scope'   => 'chicken',
+            'user_id' => 8,
+            'message' => "1.1.1.1/Pages",
+            'context' => '{"ip":"1.1.1.1","name":"Pages"}',
+        ],
     ];
 }

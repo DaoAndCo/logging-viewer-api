@@ -206,4 +206,26 @@ class LogsControllerTest extends IntegrationTestCase
 
         $this->assertEquals(['warning', 'error'], array_values(array_unique($col->extract('level')->toArray())));
     }
+
+    public function testFindContextStringValue() {
+
+        $this->post('/find', ['table' => 'logs', 'context' => ['ip'=>'55.44.11.22']]);
+
+        $this->assertResponseOk();
+
+        $col = new Collection($this->viewVariable('logs'));
+
+        $this->assertEquals(['55.44.11.22/Pages', '55.44.11.22/Blog'], array_values(array_unique($col->extract('message')->toArray())));
+    }
+
+    public function testFindContextMultiStringValue() {
+
+        $this->post('/find', ['table' => 'logs', 'context' => ['ip'=>'55.44.11.22', 'name' => 'Pages']]);
+
+        $this->assertResponseOk();
+
+        $col = new Collection($this->viewVariable('logs'));
+
+        $this->assertEquals(['55.44.11.22/Pages'], array_values(array_unique($col->extract('message')->toArray())));
+    }
 }

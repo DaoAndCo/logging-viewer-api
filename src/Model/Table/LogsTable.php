@@ -5,6 +5,7 @@ use Cake\ORM\Table;
 use Cake\ORM\Query;
 use Cake\Database\Schema\Table as Schema;
 use Cake\I18n\Time;
+use Cake\Collection\Collection;
 
 class LogsTable extends Table {
 
@@ -13,6 +14,12 @@ class LogsTable extends Table {
         return $schema;
     }
 
+    /**
+     * Find logs with filters
+     * @param  Query  $query
+     * @param  array  $options with key filters
+     * @return Query
+     */
     public function findFilter(Query $query, array $options) {
 
         $filters = (isset($options['filters'])) ? $options['filters'] : [];
@@ -57,5 +64,23 @@ class LogsTable extends Table {
             $query->where(['level IN' => $filters['levels']]);
 
         return $query;
+    }
+
+    /**
+     * Filter by context (after findFilter)
+     * @param  Query  $query
+     * @param  array $context ['key'=>'val']
+     * @return Collection
+     */
+    public function filterContext(Query $query, $context) {
+        $col = new Collection($query);
+
+        foreach ( $context as $field => $value ) {
+            $col = $col->filter(function ($log, $key) use($field, $value) {
+                return ( isset($log->context[$field]) ) && ( $log->context[$field] === $value);
+            });
+        }
+
+        return $col;
     }
 }
