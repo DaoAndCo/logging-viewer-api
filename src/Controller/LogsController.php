@@ -30,7 +30,7 @@ class LogsController extends AppController {
         $this->request->allowMethod(['post']);
 
         if ( ! isset($this->request->data['config']) || ( ! $config = Configure::read("LoggingViewer.{$this->request->data['config']}") ) )
-            throw new NotFoundException(__('Table required'));
+            throw new NotFoundException(__('Config required'));
 
         $this->Logs = TableRegistry::get('Logs', ['table' => $config['table']]);
 
