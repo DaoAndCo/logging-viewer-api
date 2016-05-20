@@ -34,7 +34,11 @@ class LogsController extends AppController {
 
         $this->Logs = TableRegistry::get('Logs', ['table' => $config['table']]);
 
-        $result = $this->Logs->find('filter', ['filters' => $this->request->data]);
+        $options = [
+            'config'  => $config,
+            'filters' => $this->request->data,
+        ];
+        $result = $this->Logs->find('filter', $options);
 
         if ( ! empty($this->request->data['context']) )
             $result = $this->Logs->filterContext($result, $this->request->data['context']);

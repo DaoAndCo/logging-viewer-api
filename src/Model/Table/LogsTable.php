@@ -9,78 +9,98 @@ use Cake\Collection\Collection;
 
 class LogsTable extends Table {
 
-    protected function _initializeSchema(Schema $schema) {
-        $schema->columnType('context', 'json');
-        return $schema;
+  protected function _initializeSchema(Schema $schema) {
+    $schema->columnType('context', 'json');
+    return $schema;
+  }
+
+  /**
+   * Find logs with filters
+   * @param  Query  $query
+   * @param  array  $options with key filters
+   * @return Query
+   */
+  public function findFilter(Query $query, array $options) {
+
+      $query->select($this);
+
+      if ( isset($options['config']['users']) ) {
+        $configUsers = $options['config']['users'];
+
+        if ( $configUsers['firstname'] )
+          $query->select(["user.{$configUsers['firstname']}"]);
+
+        if ( $configUsers['lastname'] )
+          $query->select(["user.{$configUsers['lastname']}"]);
+
+        $query->join([
+          'user' => [
+            'table' => $configUsers['table'],
+            'type' => 'LEFT',
+            'conditions' => "user.{$configUsers['id']} = user_id",
+          ],
+        ]);
+      }
+
+      $filters = (isset($options['filters'])) ? $options['filters'] : [];
+
+      if ( isset($filters['limit']) )
+          $query->limit($filters['limit']);
+
+      if ( isset($filters['order']) )
+          $query->order($filters['order']);
+
+      if ( isset($filters['start']) && ( $start = new Time($filters['start']) ) ) {
+          $query->where(function ($exp, $q) use ($start) {
+              return $exp->gte('created', $start);
+          });
+      }
+
+      if ( isset($filters['end']) && ( $end = new Time($filters['end']) ) ) {
+          $query->where(function ($exp, $q) use ($end) {
+              return $exp->lte('created', $end);
+          });
+      }
+
+      if ( array_key_exists('users', $filters) ) {
+          if ( $filters['users'] )
+              $query->where(['user_id IN' => $filters['users']]);
+          else
+              $query->where(function ($exp, $q) {
+                  return $exp->isNull('user_id');
+              });
+      }
+
+      if ( array_key_exists('scopes', $filters) ) {
+          if ( $filters['scopes'] )
+              $query->where(['scope IN' => $filters['scopes']]);
+          else
+              $query->where(function ($exp, $q) {
+                  return $exp->isNull('scope');
+              });
+      }
+
+      if ( isset($filters['levels']) )
+          $query->where(['level IN' => $filters['levels']]);
+
+      return $query;
+  }
+
+  /**
+   * Filter by context (after findFilter)
+   * @param  Query  $query
+   * @param  array $context ['key'=>'val']
+   * @return Collection
+   */
+  public function filterContext(Query $query, $context) {
+    $col = new Collection($query);
+
+    foreach ( $context as $field => $value ) {
+      $col = $col->filter(function ($log, $key) use($field, $value) {
+        return ( isset($log->context[$field]) ) && ( $log->context[$field] === $value);
+      });
     }
 
-    /**
-     * Find logs with filters
-     * @param  Query  $query
-     * @param  array  $options with key filters
-     * @return Query
-     */
-    public function findFilter(Query $query, array $options) {
-
-        $filters = (isset($options['filters'])) ? $options['filters'] : [];
-
-        if ( isset($filters['limit']) )
-            $query->limit($filters['limit']);
-
-        if ( isset($filters['order']) )
-            $query->order($filters['order']);
-
-        if ( isset($filters['start']) && ( $start = new Time($filters['start']) ) ) {
-            $query->where(function ($exp, $q) use ($start) {
-                return $exp->gte('created', $start);
-            });
-        }
-
-        if ( isset($filters['end']) && ( $end = new Time($filters['end']) ) ) {
-            $query->where(function ($exp, $q) use ($end) {
-                return $exp->lte('created', $end);
-            });
-        }
-
-        if ( array_key_exists('users', $filters) ) {
-            if ( $filters['users'] )
-                $query->where(['user_id IN' => $filters['users']]);
-            else
-                $query->where(function ($exp, $q) {
-                    return $exp->isNull('user_id');
-                });
-        }
-
-        if ( array_key_exists('scopes', $filters) ) {
-            if ( $filters['scopes'] )
-                $query->where(['scope IN' => $filters['scopes']]);
-            else
-                $query->where(function ($exp, $q) {
-                    return $exp->isNull('scope');
-                });
-        }
-
-        if ( isset($filters['levels']) )
-            $query->where(['level IN' => $filters['levels']]);
-
-        return $query;
-    }
-
-    /**
-     * Filter by context (after findFilter)
-     * @param  Query  $query
-     * @param  array $context ['key'=>'val']
-     * @return Collection
-     */
-    public function filterContext(Query $query, $context) {
-        $col = new Collection($query);
-
-        foreach ( $context as $field => $value ) {
-            $col = $col->filter(function ($log, $key) use($field, $value) {
-                return ( isset($log->context[$field]) ) && ( $log->context[$field] === $value);
-            });
-        }
-
-        return $col;
-    }
+    return $col;
+  }
 }

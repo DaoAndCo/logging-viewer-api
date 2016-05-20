@@ -13,6 +13,7 @@ class LogsControllerTest extends IntegrationTestCase
 {
     public $fixtures = [
         'app.Users',
+        'app.User',
         'app.Logs',
     ];
 
@@ -237,5 +238,16 @@ class LogsControllerTest extends IntegrationTestCase
         $col = new Collection($this->viewVariable('logs'));
 
         $this->assertEquals(['55.44.11.22/Pages'], array_values(array_unique($col->extract('message')->toArray())));
+    }
+
+    public function testFindReturnUsername() {
+        $this->post('/find', ['config' => 'logs']);
+
+        $this->assertResponseOk();
+
+        $expected = ['firstname' => 'Richard', 'lastname' => 'Coeur de chien'];
+        $log = $this->viewVariable('logs')[0];
+
+        $this->assertEquals($expected, $log['user']);
     }
 }
