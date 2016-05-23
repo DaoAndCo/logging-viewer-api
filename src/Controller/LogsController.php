@@ -56,6 +56,7 @@ class LogsController extends AppController {
 
         $this->set([
             'logs' => $result->toArray(),
+            'pagination' => $this->request->params['paging'],
         ]);
     }
 }
