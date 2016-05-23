@@ -38,7 +38,18 @@ class LogsController extends AppController {
             'config'  => $config,
             'filters' => $this->request->data,
         ];
-        $result = $this->Logs->find('filter', $options);
+        // $result = $this->Logs->find('filter', $options);
+
+        $this->paginate = [
+          'finder' => [
+            'filter' => $options,
+          ],
+          'order' => [
+            'Logs.created' => 'desc'
+          ],
+          'limit' => 20,
+        ];
+        $result = $this->paginate($this->Logs);
 
         if ( ! empty($this->request->data['context']) )
             $result = $this->Logs->filterContext($result, $this->request->data['context']);
