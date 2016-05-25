@@ -50,38 +50,42 @@ class LogsTable extends Table {
       if ( isset($filters['order']) )
           $query->order($filters['order']);
 
-      if ( isset($filters['start']) && ( $start = new Time($filters['start']) ) ) {
+      if ( isset($filters['start']) && $filters['start'] && ( $start = new Time($filters['start']) ) ) {
           $query->where(function ($exp, $q) use ($start) {
               return $exp->gte('created', $start);
           });
       }
 
-      if ( isset($filters['end']) && ( $end = new Time($filters['end']) ) ) {
+      if ( isset($filters['end']) && $filters['end'] && ( $end = new Time($filters['end']) ) ) {
           $query->where(function ($exp, $q) use ($end) {
               return $exp->lte('created', $end);
           });
       }
 
       if ( array_key_exists('users', $filters) ) {
+        if ( is_array($filters['users']) || $filters['users'] ) {
           if ( $filters['users'] )
-              $query->where(['user_id IN' => $filters['users']]);
-          else
-              $query->where(function ($exp, $q) {
-                  return $exp->isNull('user_id');
-              });
+            $query->where(['user_id IN' => $filters['users']]);
+        } else {
+          $query->where(function ($exp, $q) {
+            return $exp->isNull('user_id');
+          });
+        }
       }
 
       if ( array_key_exists('scopes', $filters) ) {
+        if ( is_array($filters['scopes']) || $filters['scopes'] ) {
           if ( $filters['scopes'] )
-              $query->where(['scope IN' => $filters['scopes']]);
-          else
-              $query->where(function ($exp, $q) {
-                  return $exp->isNull('scope');
-              });
+            $query->where(['scope IN' => $filters['scopes']]);
+        } else {
+          $query->where(function ($exp, $q) {
+            return $exp->isNull('scope');
+          });
+        }
       }
 
-      if ( isset($filters['levels']) )
-          $query->where(['level IN' => $filters['levels']]);
+      if ( isset($filters['levels']) && $filters['levels'] )
+        $query->where(['level IN' => $filters['levels']]);
 
       return $query;
   }
