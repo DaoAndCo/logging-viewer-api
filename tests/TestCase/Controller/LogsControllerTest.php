@@ -284,4 +284,16 @@ class LogsControllerTest extends IntegrationTestCase
 
         $this->assertEquals($expected, $log['user']);
     }
+
+    public function testFindByMessage() {
+        $this->post('/find', ['config' => 'logs', 'message' => 'warning test']);
+
+        $this->assertResponseOk();
+
+        $logs = $this->viewVariable('logs');
+        $firstLog = $logs[0];
+
+        $this->assertCount(1, $logs);
+        $this->assertEquals("I'm a warning test", $firstLog->message);
+    }
 }

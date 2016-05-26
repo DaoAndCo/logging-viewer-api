@@ -99,6 +99,9 @@ class LogsTable extends Table {
       if ( isset($filters['levels']) && $filters['levels'] )
         $query->where(['level IN' => $filters['levels']]);
 
+      if ( isset($filters['message']) && $filters['message'] )
+        $query->where(['message LIKE' => "%{$filters['message']}%"]);
+
       return $query;
   }
 

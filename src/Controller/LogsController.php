@@ -24,6 +24,7 @@ class LogsController extends AppController {
             * (int|null|false|array) users : filter by user_id
             * (string|null|false|array) scopes : filter by scope
             * (string|array) levels : filter by level
+            * (string) message : filter by message with 'like' ('%value%')
             * (array) context : filter by context (['key'=>'val'])
      */
     public function find() {
