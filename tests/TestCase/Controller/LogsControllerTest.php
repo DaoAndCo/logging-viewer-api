@@ -296,4 +296,72 @@ class LogsControllerTest extends IntegrationTestCase
         $this->assertCount(1, $logs);
         $this->assertEquals("I'm a warning test", $firstLog->message);
     }
+
+    public function testFindByUserName_firstname() {
+        $this->post('/find', ['config' => 'logs', 'user' => 'Richard']);
+
+        $this->assertResponseOk();
+
+        $logs = $this->viewVariable('logs');
+        $col = new Collection($logs);
+
+        $this->assertEquals([1], array_values(array_unique($col->extract('user_id')->toArray())));
+    }
+
+    public function testFindByUserName_lastname() {
+        $this->post('/find', ['config' => 'logs', 'user' => 'Sweppeszeneguer']);
+
+        $this->assertResponseOk();
+
+        $logs = $this->viewVariable('logs');
+        $col = new Collection($logs);
+
+        $this->assertEquals([7], array_values(array_unique($col->extract('user_id')->toArray())));
+    }
+
+    public function testFindByUserName_firstnameAndLastname() {
+        $this->post('/find', ['config' => 'logs', 'user' => 'Mat Dumon']);
+
+        $this->assertResponseOk();
+
+        $logs = $this->viewVariable('logs');
+        $col = new Collection($logs);
+
+        $this->assertEquals([4], array_values(array_unique($col->extract('user_id')->toArray())));
+    }
+
+    public function testFindByUserName_firstnameComposed() {
+        $this->post('/find', ['config' => 'logs', 'user' => 'Jean Claude']);
+
+        $this->assertResponseOk();
+
+        $logs = $this->viewVariable('logs');
+        $col = new Collection($logs);
+
+        $this->assertEquals([3], array_values(array_unique($col->extract('user_id')->toArray())));
+    }
+
+    public function testFindByUserName_lastnameComposed() {
+        $this->post('/find', ['config' => 'logs', 'user' => 'Van Dome']);
+
+        $this->assertResponseOk();
+
+        $logs = $this->viewVariable('logs');
+        $col = new Collection($logs);
+
+        $this->assertEquals([3], array_values(array_unique($col->extract('user_id')->toArray())));
+    }
+
+    public function testFindByUserName_empty() {
+        $this->post('/find', ['config' => 'logs', 'user' => '']);
+
+        $this->assertResponseOk();
+
+        $result = $this->viewVariable('logs');
+
+        $Logs = TableRegistry::get('Logs');
+        $query = $Logs->find();
+
+        $this->assertEquals($query->count(), count($result));
+    }
 }

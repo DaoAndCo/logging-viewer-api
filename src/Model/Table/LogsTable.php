@@ -22,6 +22,8 @@ class LogsTable extends Table {
    */
   public function findFilter(Query $query, array $options) {
 
+      $filters = (isset($options['filters'])) ? $options['filters'] : [];
+
       $query->select($this);
 
       if ( isset($options['config']['users']) ) {
@@ -40,9 +42,22 @@ class LogsTable extends Table {
             'conditions' => "user.{$configUsers['id']} = user_id",
           ],
         ]);
+
+        if ( isset($filters['user']) && $filters['user'] ) {
+          $userWords = explode(' ', $filters['user']);
+
+          foreach ( $userWords as $userWord ) {
+            $query->where([
+              'OR' => [
+                ["user.{$configUsers['firstname']} LIKE" => "%{$userWord}%"],
+                ["user.{$configUsers['lastname']} LIKE" => "%{$userWord}%"]
+              ],
+            ]);
+          }
+        }
       }
 
-      $filters = (isset($options['filters'])) ? $options['filters'] : [];
+
 
       if ( isset($filters['limit']) )
           $query->limit($filters['limit']);
