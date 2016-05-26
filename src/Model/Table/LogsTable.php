@@ -74,10 +74,10 @@ class LogsTable extends Table {
           });
       }
 
-      if ( array_key_exists('users', $filters) ) {
-        if ( is_array($filters['users']) || $filters['users'] ) {
-          if ( $filters['users'] )
-            $query->where(['user_id IN' => $filters['users']]);
+      if ( array_key_exists('userIds', $filters) ) {
+        if ( is_array($filters['userIds']) || $filters['userIds'] ) {
+          if ( $filters['userIds'] )
+            $query->where(['user_id IN' => $filters['userIds']]);
         } else {
           $query->where(function ($exp, $q) {
             return $exp->isNull('user_id');

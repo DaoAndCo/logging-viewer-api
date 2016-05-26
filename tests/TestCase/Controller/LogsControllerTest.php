@@ -116,7 +116,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindUserId() {
 
-        $this->post('/find', ['config' => 'logs', 'users' => 2, 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'userIds' => 2, 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -126,7 +126,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindUserNull() {
 
-        $this->post('/find', ['config' => 'logs', 'users' => null, 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'userIds' => null, 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -136,7 +136,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindUserFalse() {
 
-        $this->post('/find', ['config' => 'logs', 'users' => false, 'limit' => 1]);
+        $this->post('/find', ['config' => 'logs', 'userIds' => false, 'limit' => 1]);
 
         $this->assertResponseOk();
 
@@ -146,7 +146,7 @@ class LogsControllerTest extends IntegrationTestCase
 
     public function testFindUserArray() {
 
-        $this->post('/find', ['config' => 'logs', 'users' => [2,3]]);
+        $this->post('/find', ['config' => 'logs', 'userIds' => [2,3]]);
 
         $this->assertResponseOk();
 

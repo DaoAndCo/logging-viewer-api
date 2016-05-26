@@ -21,7 +21,7 @@ class LogsController extends AppController {
             * (array) order : order the result set [field => "ASC|DESC", ...]
             * (string) start : starting date ("2016-01-01")
             * (string) end : end date ("2016-02-01")
-            * (int|null|false|array) users : filter by user_id
+            * (int|null|false|array) userIds : filter by user_id
             * (string|null|false|array) scopes : filter by scope
             * (string|array) levels : filter by level
             * (string) message : filter by message with 'like' ('%value%')
