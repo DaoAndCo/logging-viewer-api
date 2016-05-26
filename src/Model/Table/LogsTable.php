@@ -47,8 +47,20 @@ class LogsTable extends Table {
       if ( isset($filters['limit']) )
           $query->limit($filters['limit']);
 
-      if ( isset($filters['order']) )
-          $query->order($filters['order']);
+      if ( isset($filters['order']) ) {
+        $order = [];
+
+        foreach ( $filters['order'] as $field => $direction ) {
+          if ( strpos($field, '.') )
+            $order[$field] = $direction;
+          else
+            $order['Logs.' . $field] = $direction;
+        }
+
+        $query->order($order);
+      }
+      else
+        $query->order(['created' => 'desc']);
 
       if ( isset($filters['start']) && $filters['start'] && ( $start = new Time($filters['start']) ) ) {
           $query->where(function ($exp, $q) use ($start) {

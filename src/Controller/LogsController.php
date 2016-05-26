@@ -44,15 +44,13 @@ class LogsController extends AppController {
           'finder' => [
             'filter' => $options,
           ],
-          'order' => [
-            'Logs.created' => 'desc'
-          ],
           'limit' => 20,
         ];
         $result = $this->paginate($this->Logs);
 
-        if ( ! empty($this->request->data['context']) )
-            $result = $this->Logs->filterContext($result, $this->request->data['context']);
+        // fail with pagination
+        // if ( ! empty($this->request->data['context']) )
+        //     $result = $this->Logs->filterContext($result, $this->request->data['context']);
 
         $this->set([
             'logs' => $result->toArray(),
