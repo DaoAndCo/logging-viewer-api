@@ -75,7 +75,7 @@ class LogsTable extends Table {
         $query->order($order);
       }
       else
-        $query->order(['created' => 'desc']);
+        $query->order(['Logs.created' => 'desc']);
 
       if ( isset($filters['start']) && $filters['start'] && ( $start = new Time($filters['start']) ) ) {
           $query->where(function ($exp, $q) use ($start) {

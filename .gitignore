@@ -6,3 +6,7 @@
 
 composer.lock
 config/log.php
+config/log.local.php
+config/log.prod.php
+config/app.local.php
+config/app.prod.php
