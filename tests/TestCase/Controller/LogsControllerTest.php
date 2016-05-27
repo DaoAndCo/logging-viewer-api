@@ -44,6 +44,18 @@ class LogsControllerTest extends IntegrationTestCase
         $this->assertEquals(3, $result[1]->id);
     }
 
+    public function testFindBadLogin() {
+        $this->configRequest([
+          'environment' => [
+              'PHP_AUTH_USER' => 'admin',
+              'PHP_AUTH_PW' => 'bad_api_key'
+          ],
+      ]);
+
+      $this->post('/find', ['config' => 'logs']);
+      $this->assertResponseCode(401);
+    }
+
     public function testFindNotSendConfig() {
         $this->post('/find');
         $this->assertResponseCode(404);
@@ -363,5 +375,31 @@ class LogsControllerTest extends IntegrationTestCase
         $query = $Logs->find();
 
         $this->assertEquals($query->count(), count($result));
+    }
+
+
+
+
+    public function testGetConfigs() {
+      $this->post('/configs');
+
+      $this->assertResponseOk();
+
+      $result = $this->viewVariable('configs');
+
+      $this->assertEquals(['logs'], $result);
+    }
+
+    public function testGetConfigs_badLogin() {
+
+      $this->configRequest([
+          'environment' => [
+              'PHP_AUTH_USER' => 'admin',
+              'PHP_AUTH_PW' => 'bad_api_key'
+          ],
+      ]);
+
+      $this->post('/configs');
+      $this->assertResponseCode(401);
     }
 }

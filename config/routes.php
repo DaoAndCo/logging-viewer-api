@@ -50,6 +50,11 @@ Router::scope('/', function (RouteBuilder $routes) {
         ['controller' => 'Logs', 'action' => 'find']
     );
 
+    $routes->connect(
+        '/configs',
+        ['controller' => 'Logs', 'action' => 'configs']
+    );
+
     $routes->fallbacks('DashedRoute');
 });
 

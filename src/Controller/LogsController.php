@@ -59,4 +59,8 @@ class LogsController extends AppController {
             'pagination' => $this->request->params['paging'],
         ]);
     }
+
+    public function configs() {
+      $this->set(['configs' => array_keys(Configure::read("LoggingViewer"))]);
+    }
 }
