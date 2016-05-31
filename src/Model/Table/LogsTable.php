@@ -30,10 +30,10 @@ class LogsTable extends Table {
         $configUsers = $options['config']['users'];
 
         if ( $configUsers['firstname'] )
-          $query->select(["user.{$configUsers['firstname']}"]);
+          $query->select(['user__firstname' => "user.{$configUsers['firstname']}"]);
 
         if ( $configUsers['lastname'] )
-          $query->select(["user.{$configUsers['lastname']}"]);
+          $query->select(['user__lastname' => "user.{$configUsers['lastname']}"]);
 
         $query->join([
           'user' => [
